@@ -1,0 +1,133 @@
+-- Conky, a system monitor https://github.com/brndnmtthws/conky
+--
+-- This configuration file is Lua code. You can write code in here, and it will
+-- execute when Conky loads. You can use it to generate your own advanced
+-- configurations.
+--
+-- Try this (remove the `--`):
+--
+--   print("Loading Conky config")
+--
+-- For more on Lua, see:
+-- https://www.lua.org/pil/contents.html
+
+conky.config = {
+
+update_interval = 2,
+total_run_times = 0,
+no_buffers = true,
+cpu_avg_samples = 2,
+net_avg_samples = 2,
+
+default_color = '#CCCDC3',
+default_outline_color = 'green',
+default_shade_color = 'yellow',
+
+color0 = 'FFFFFF',
+color1 = 'FFAE00',
+color2 = 'B22222',
+color3 = '696969',
+color4 = 'D3D3D3',
+color5 = '2F4F4F',
+color6 = 'F8D568',
+color7 = '00FA9A',
+color8 = 'DA614E',
+color9 = 'FFE7BA',
+
+own_window = true,
+own_window_type = 'normal',
+own_window_transparent = true,
+own_window_argb_visual = true,
+double_buffer = true,
+use_spacer = 'left',
+maximum_width = 280,
+own_window_hints = 'undecorated,below,sticky,skip_taskbar,skip_pager',
+
+alignment = 'top_right',
+
+draw_graph_borders = true,
+border_inner_margin = 0,
+border_outer_margin = 0,
+gap_x = 0,
+gap_y = 40,
+border_width = 10,
+
+draw_outline = false,
+draw_shades = false,
+draw_borders = false,
+uppercase = false,
+use_xft = true,
+font = 'OpenSans:bold:size=8'
+}
+
+conky.text = [[
+# Title / Banner message
+${image /Storage/Pictures/logo/240px-Faenza-start-here-archlinux-symbolic.png -s 74x74}${font KaratMedium:size=36}$alignc${offset 32}${voffset 7}${color #fff}Arch${color #418FFF}linux${font}${voffset 25}
+#
+# General system information
+${color1}SYSTEM INFORMATION ${hr 2}$color
+${color0}System: $color${execi 9999999 head -n1 /etc/os-release | grep -o '".*"' | sed 's/"*"//g'}${alignr}${color0}arch: $color$machine
+${color0}Kernel: $color$kernel${alignr}${color0}Uptime: $color$uptime
+${color0}MAC Address: $color${execi 9999999 cat /sys/class/net/wlp4s0/address}
+#
+# CPU information
+${color1}RYZEN-STATUS ${hr 2}$color
+${color0}Temp: $color${exec "sensors | grep 'Tdie' | cut -c16-17"}°C ${offset 124}${color0}Freq: $color$freq MHz
+${color0}CPU Usage:$color $cpu% ${color #418FFF}${cpubar}
+${cpugraph a020f0 0000ff}$color
+#
+# GPU-vega information
+${color1}RADEON-STATUS ${hr 2}$color
+${color0}Temp: $color${hwmon 4 temp 1}°C ${offset 124}${color0}Freq: $color${exec "cat /sys/class/drm/card0/device/pp_dpm_sclk | grep "*" | cut -c 4-10 | grep -o '[0-9]\+'"} MHz 
+${color0}GPU Usage:$color ${exec "cat /sys/class/drm/card0/device/gpu_busy_percent"}% ${color8}${execbar "cat /sys/class/drm/card0/device/gpu_busy_percent"}
+${execgraph "cat /sys/class/drm/card0/device/gpu_busy_percent" ffa500 ff0000}$color
+#
+# GPU-nvidia information
+${color1}NVIDIA-STATUS ${hr 2}$color
+${color0}Temp: $color${nvidia temp}°C ${offset 124}${color0}Freq: $color${nvidia gpufreq} MHz
+${color0}GPU Usage:$color ${nvidia gpuutil}% ${color7}${nvidiabar gpuutil}
+${nvidiagraph gpuutil 0000ff 00ff00}$color
+#
+# Top running processes
+${color1}PROCESSES ${hr 2}$color
+${color0}Processes:$color $processes  ${alignr}${color0}Threads:$color $threads
+${stippled_hr 2}
+${color0}NAME ${alignc}${offset 33}CPU%${alignr}MEM%$color${font Monospace:bold:size=8}
+${top name 1} ${offset 24}${top cpu 1}${alignr}${offset -7}${top mem 1}
+${top name 2} ${offset 24}${top cpu 2}${alignr}${offset -7}${top mem 2}
+${top name 3} ${offset 24}${top cpu 3}${alignr}${offset -7}${top mem 3}
+${top name 4} ${offset 24}${top cpu 4}${alignr}${offset -7}${top mem 4}${font OpenSans:size=8:weight=bold}${voffset 5}
+#
+# Memory and swap space untilization
+${color1}MEMORY & SWAP ${hr 2}$color
+${color0}RAM Usage: ${color}$mem / $memmax
+$memperc% ${color6}${membar}$color
+${color0}Swap Usage: ${color}$swap / $swapmax
+$swapperc% ${color6}${swapbar}$color${voffset 5}
+#
+# File System utilization
+${color1}FILE SYSTEM ${hr 2}$color
+${color0}root: $color${fs_used_perc /}% ${color8}${fs_bar /}$color
+${color0}storage: $color${fs_used_perc /Storage}% ${color8}${fs_bar /Storage}$color
+${color0}workspace: $color${fs_used_perc /Workspace}% ${color8}${fs_bar /Workspace}$color
+${stippled_hr 2}
+${color0}Reads: $color$diskio_read/s${alignr}${color0}Writes: $color$diskio_write/s
+${diskiograph_read 30,135 33FF00 FF3333 scale -t}${alignr}${diskiograph_write 30,135 33FF00 FF3333 scale -t}
+#
+# Ethernet/Wi-Fi utilization
+${color1}NETWORKING ${hr 2}$color${if_up enp3s}
+${color0}Down:$color ${downspeed enp3s0}/s ${alignr}${color0}Up:$color ${upspeed enp3s0}/s
+${color0}Total:$color ${totaldown enp3s0} ${alignr}${color0}Total: $color${totalup enp3s0}
+${color0}${downspeedgraph enp3s0 30,135 000000 00ff00} ${alignr}${upspeedgraph enp3s0 30,135 000000 ff0000}$color${else}${if_up wlp4s0}
+${color0}Down:$color ${downspeed wlp4s0}/s ${alignr}${color0}Up:$color ${upspeed wlp4s0}/s
+${color0}Total:$color ${totaldown wlp4s0} ${alignr}${color0}Total: $color${totalup wlp4s0}
+${color0}${downspeedgraph wlp4s0 30,135 000000 00ff00} ${alignr}${upspeedgraph wlp4s0 30,135 000000 ff0000}$color${endif}${endif}
+#
+# Arch forum rss feed
+${color1}PLANET ARCH RSS FEED ${hr 2}$color
+${color0}${font OpenSans:bold:size=7}${rss https://planet.archlinux.org/rss20.xml 21600 item_titles 5}${font}$color${voffset 5}
+#
+# pacman updates
+${color1}SYSTEM UPDATES ${hr 2}$color
+${color0}${execpi 3600 checkupdates | awk 'END { print (NR == 0 ? "System up to date" : NR " package" (NR > 1 ? "s" : "")); }'}$color
+]]
