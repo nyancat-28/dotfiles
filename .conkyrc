@@ -19,7 +19,7 @@ no_buffers = true,
 cpu_avg_samples = 2,
 net_avg_samples = 2,
 
-default_color = '#CCCDC3',
+default_color = '#C0C0C0',
 default_outline_color = 'green',
 default_shade_color = 'yellow',
 
@@ -29,15 +29,16 @@ color2 = 'B22222',
 color3 = '696969',
 color4 = 'D3D3D3',
 color5 = '2F4F4F',
-color6 = 'F8D568',
-color7 = '00FA9A',
-color8 = 'DA614E',
+color6 = 'ffed00',
+color7 = '00FF00',
+color8 = 'FF0000',
 color9 = 'FFE7BA',
 
 own_window = true,
 own_window_type = 'normal',
-own_window_transparent = true,
+own_window_transparent = false,
 own_window_argb_visual = true,
+own_window_argb_value = 135,
 double_buffer = true,
 use_spacer = 'left',
 maximum_width = 280,
@@ -48,8 +49,8 @@ alignment = 'top_right',
 draw_graph_borders = true,
 border_inner_margin = 0,
 border_outer_margin = 0,
-gap_x = 0,
-gap_y = 40,
+gap_x = 15,
+gap_y = 42,
 border_width = 10,
 
 draw_outline = false,
@@ -60,9 +61,10 @@ use_xft = true,
 font = 'OpenSans:bold:size=8'
 }
 
+
 conky.text = [[
 # Title / Banner message
-${image /Storage/Pictures/logo/240px-Faenza-start-here-archlinux-symbolic.png -s 74x74}${font KaratMedium:size=36}$alignc${offset 32}${voffset 7}${color #fff}Arch${color #418FFF}linux${font}${voffset 25}
+${image /storage/Pictures/logo/arch_logo.png -s 76x76}${font KaratMedium:size=36}$alignc${offset 32}${voffset 7}${color #fff}Arch${color #418FFF}linux${font}${voffset 25}
 #
 # General system information
 ${color1}SYSTEM INFORMATION ${hr 2}$color
@@ -72,15 +74,15 @@ ${color0}MAC Address: $color${execi 9999999 cat /sys/class/net/wlp4s0/address}
 #
 # CPU information
 ${color1}RYZEN-STATUS ${hr 2}$color
-${color0}Temp: $color${exec "sensors | grep 'Tdie' | cut -c16-17"}°C ${offset 124}${color0}Freq: $color$freq MHz
-${color0}CPU Usage:$color $cpu% ${color #418FFF}${cpubar}
-${cpugraph a020f0 0000ff}$color
+${color0}Temp: $color${exec "sensors | grep 'Tctl' | cut -c16-17"}°C ${offset 124}${color0}Freq: $color$freq MHz
+${color0}CPU Usage:$color $cpu% ${color #0000FF}${cpubar}
+${cpugraph AF00FF 0000FF}$color
 #
 # GPU-vega information
 ${color1}RADEON-STATUS ${hr 2}$color
 ${color0}Temp: $color${hwmon 4 temp 1}°C ${offset 124}${color0}Freq: $color${exec "cat /sys/class/drm/card0/device/pp_dpm_sclk | grep "*" | cut -c 4-10 | grep -o '[0-9]\+'"} MHz 
 ${color0}GPU Usage:$color ${exec "cat /sys/class/drm/card0/device/gpu_busy_percent"}% ${color8}${execbar "cat /sys/class/drm/card0/device/gpu_busy_percent"}
-${execgraph "cat /sys/class/drm/card0/device/gpu_busy_percent" ffa500 ff0000}$color
+${execgraph "cat /sys/class/drm/card0/device/gpu_busy_percent" FFAE00 ff0000}$color
 #
 # GPU-nvidia information
 ${color1}NVIDIA-STATUS ${hr 2}$color
@@ -108,11 +110,10 @@ $swapperc% ${color6}${swapbar}$color${voffset 5}
 # File System utilization
 ${color1}FILE SYSTEM ${hr 2}$color
 ${color0}root: $color${fs_used_perc /}% ${color8}${fs_bar /}$color
-${color0}storage: $color${fs_used_perc /Storage}% ${color8}${fs_bar /Storage}$color
-${color0}workspace: $color${fs_used_perc /Workspace}% ${color8}${fs_bar /Workspace}$color
+${color0}storage: $color${fs_used_perc /storage}% ${color8}${fs_bar /storage}$color
 ${stippled_hr 2}
 ${color0}Reads: $color$diskio_read/s${alignr}${color0}Writes: $color$diskio_write/s
-${diskiograph_read 30,135 33FF00 FF3333 scale -t}${alignr}${diskiograph_write 30,135 33FF00 FF3333 scale -t}
+${diskiograph_read 30,135 00FF00 FF0000 scale -t}${alignr}${diskiograph_write 30,135 00FF00 FF0000 scale -t}
 #
 # Ethernet/Wi-Fi utilization
 ${color1}NETWORKING ${hr 2}$color${if_up enp3s}
@@ -123,11 +124,12 @@ ${color0}Down:$color ${downspeed wlp4s0}/s ${alignr}${color0}Up:$color ${upspeed
 ${color0}Total:$color ${totaldown wlp4s0} ${alignr}${color0}Total: $color${totalup wlp4s0}
 ${color0}${downspeedgraph wlp4s0 30,135 000000 00ff00} ${alignr}${upspeedgraph wlp4s0 30,135 000000 ff0000}$color${endif}${endif}
 #
-# Arch forum rss feed
-${color1}PLANET ARCH RSS FEED ${hr 2}$color
-${color0}${font OpenSans:bold:size=7}${rss https://planet.archlinux.org/rss20.xml 21600 item_titles 5}${font}$color${voffset 5}
+# rss feed
+${color1}INDIA TODAY RSS FEED ${hr 2}$color
+${color0}${font OpenSans:size=7}${rss https://www.indiatoday.in/rss/1206584 3600 item_titles 7}${font}$color${voffset 5}
 #
 # pacman updates
 ${color1}SYSTEM UPDATES ${hr 2}$color
-${color0}${execpi 3600 checkupdates | awk 'END { print (NR == 0 ? "System up to date" : NR " package" (NR > 1 ? "s" : "")); }'}$color
+${color0}pacman  :  $color ${execpi 3600 checkupdates | awk 'END { print (NR == 0 ? "up-to-date" : NR " package" (NR > 1 ? "s" : "")); }'}$color
+${color0}yay           :  $color ${execpi 3600 yay -Qu | awk 'END { print (NR == 0 ? "up-to-date" : NR " package" (NR > 1 ? "s" : "")); }'}$color
 ]]
